@@ -1,0 +1,41 @@
+using DG.Tweening;
+
+using TMPro;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Templates
+{
+    public static class DOTweenAnimator
+    {
+        public static Tween FadeInBounce(Transform transform, float duration, float randomDelay = 0)
+        {
+            transform.localScale = Vector3.zero;
+            return transform.DOScale(1, duration)
+             .SetEase(Ease.OutBounce)
+             .SetDelay(UnityEngine.Random.Range(0, randomDelay));
+        }
+
+        public static Tween ShakePosition(Transform transform, float duration, float strength = 10)
+        {
+            return transform.DOShakePosition(duration, strength)
+             .SetEase(Ease.InBounce);
+        }
+
+        public static Tween FadeInUI(CanvasGroup canvasGroup, float duration = 1)
+        {
+            return canvasGroup.DOFade(1, duration);
+        }
+
+        public static Tween FadeInUI(Image image, float duration = 1)
+        {
+            return image.DOFade(1, duration);
+        }
+
+        public static Tween FadeInUI(TextMeshProUGUI text, float duration = 1)
+        {
+            return text.DOFade(1, duration);
+        }
+    }
+}
