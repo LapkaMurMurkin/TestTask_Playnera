@@ -1,9 +1,7 @@
-using Templates;
-
 namespace TestTask_Playnera
 {
-    public class CreamView : CanvasElement
+    public class CreamView : ItemView
     {
-        
+
     }
 }

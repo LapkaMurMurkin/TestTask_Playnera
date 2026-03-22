@@ -2,7 +2,7 @@ using Templates;
 
 namespace TestTask_Playnera
 {
-    public abstract class ItemView : CanvasElement
+    public class BlushBrushView : ItemView
     {
 
     }

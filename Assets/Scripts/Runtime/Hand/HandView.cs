@@ -1,3 +1,5 @@
+using System;
+
 using Templates;
 
 using UnityEngine;
@@ -11,13 +13,23 @@ namespace TestTask_Playnera
         private HandAnimator _handAnimator;
 
         [SerializeField] private Animator _animator;
+        [SerializeField] private CreamView _creamView;
+        [SerializeField] private BlushBrushView _blushBrushView;
 
-        public string ItemID;
 
-        public void Initialize(HandPresenter handPresenter)
+        public ItemView CurrentItem { get; private set; }
+
+        public event Action OnGetItem;
+        private void InvokeOnGetItem() => OnGetItem?.Invoke();
+        public event Action OnReturnItem;
+        private void InvokeOnReturnItem() => OnReturnItem?.Invoke();
+
+        public event Action<ItemView, GameObject> OnItemDrop;
+        //private void InvokeOnItemDrop() => OnItemDrop?.Invoke();
+
+        private void Awake()
         {
             base.Initialize();
-            _presenter = handPresenter;
             _handAnimator = new HandAnimator(_animator);
         }
 
@@ -29,17 +41,16 @@ namespace TestTask_Playnera
 
         private void EnableAnimation(string animName, float crossFade)
         {
-            BlockControllAnimationEvent();
             _handAnimator.SwitchAnimationTo(animName, crossFade);
         }
 
-        private void PlayerControllAnimationEvent()
+        public void EnablePlayerControll()
         {
             _animator.enabled = false;
             this.CanvasGroup.interactable = true;
         }
 
-        private void BlockControllAnimationEvent()
+        public void DisablePlayerControll()
         {
             _animator.enabled = true;
             this.CanvasGroup.interactable = false;
@@ -58,13 +69,49 @@ namespace TestTask_Playnera
         public void OnEndDrag(PointerEventData eventData)
         {
             this.CanvasGroup.blocksRaycasts = true;
+            OnItemDrop?.Invoke(CurrentItem, eventData.pointerEnter);
 
-            if (eventData.pointerEnter != null)
-                if (eventData.pointerEnter.TryGetComponent<FaceView>(out FaceView faceView))
-                {
-                    _presenter.DoCream();
-                    faceView.RemoveAcne();
-                }
+            /*             if (eventData.pointerEnter != null)
+                            if (eventData.pointerEnter.TryGetComponent<FaceView>(out FaceView faceView))
+                            {
+                                _presenter.DoCream();
+                                faceView.RemoveAcne();
+                            } */
+        }
+
+/*         public void GetCream()
+        {
+            CurrentItem = _creamView;
+            _handAnimator.SwitchAnimationTo(HandAnimationID.GET_CREAM);
+        }
+
+        public void GetBlushBrush()
+        {
+            CurrentItem = _blushBrushView;
+            _handAnimator.SwitchAnimationTo(HandAnimationID.GET_BLUSH_BRUSH);
+        } */
+
+        public void GetItemAnimation(CanvasElement canvasElement)
+        {
+            if (canvasElement is CreamView)
+            {
+                CurrentItem = _creamView;
+                _handAnimator.SwitchAnimationTo(HandAnimationID.GET_CREAM, 0f);
+            }
+            else if (canvasElement is BlushBrushView)
+            {
+                CurrentItem = _blushBrushView;
+                _handAnimator.SwitchAnimationTo(HandAnimationID.GET_BLUSH_BRUSH, 0f);
+            }
+
+        }
+
+        public void DOCurrentItemAnimation()
+        {
+            if (CurrentItem is CreamView)
+                _handAnimator.SwitchAnimationTo(HandAnimationID.DO_CREAM, 0f);
+            else if (CurrentItem is BlushBrushView)
+                _handAnimator.SwitchAnimationTo(HandAnimationID.DO_BLUSH_BRUSH, 0f);
         }
     }
 }

@@ -1,31 +1,35 @@
-using Templates;
-
 using UnityEngine;
 
 namespace TestTask_Playnera
 {
-    public class CharacterView : CanvasElement
+    public class CharacterView : MonoBehaviour
     {
         private CharacterPresenter _presenter;
         private CharacterAnimator _characterAnimator;
 
-        [SerializeField] private FaceView _faceView;
+        [SerializeField] private FaceTriggetZone _faceTriggerZone;
         [SerializeField] private Animator _animator;
 
         public string ItemID;
 
-        public void Initialize(CharacterPresenter presenter)
+        public void Awake()
         {
-            base.Initialize();
-            _presenter = presenter;
             _characterAnimator = new CharacterAnimator(_animator);
-
-            _faceView.Initialize(_presenter);
         }
 
-        public void ManualUpdate(float dt)
+        private void OnEnable()
         {
-            _characterAnimator.SwitchAnimationTo(_presenter.CurrentAnimation);
+            _faceTriggerZone.OnCreamItem += RemoveAcne;
+        }
+
+        private void OnDisable()
+        {
+            _faceTriggerZone.OnCreamItem += RemoveAcne;
+        }
+
+        public void RemoveAcne()
+        {
+            _characterAnimator.SwitchAnimationTo(CharacterAnimationID.REMOVE_ACNE);
         }
     }
 }
