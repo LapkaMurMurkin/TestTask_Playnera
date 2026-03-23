@@ -17,7 +17,7 @@ namespace Templates
         public virtual event Action<CanvasElement, PointerEventData> OnEnter;
         public virtual event Action<CanvasElement, PointerEventData> OnExit;
 
-        public virtual void Initialize()
+        protected virtual void Awake()
         {
             ParentCanvas = GetComponentInParent<Canvas>();
             RectTransform = GetComponent<RectTransform>();
